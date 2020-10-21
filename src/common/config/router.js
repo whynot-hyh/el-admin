@@ -17,8 +17,8 @@ let routes = [
     ]
   },
   {
-    // path: '/login',
-    // name: 'login',
+    path: '/login',
+    name: 'login',
     component: 'login/index'
   },
   {
