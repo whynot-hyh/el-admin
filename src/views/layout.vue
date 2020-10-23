@@ -2,7 +2,7 @@
   <div>
     <el-container style="position: absolute;left: 0;top: 0;bottom: 0;right: 0;overflow: hidden">
       <el-header class="d-flex align-items-center" style="background: #545c64;">
-        <a class="h5 text-light mb-0 mr-auto">UNI-ADMIN</a>
+        <a class="h5 text-light mb-0 mr-auto">{{$conf.logo}}</a>
         <el-menu
           :default-active="navBar.active"
           mode="horizontal"
@@ -24,9 +24,9 @@
           </el-submenu>
         </el-menu>
       </el-header>
-      <el-container style="height: 100%;padding-bottom: 60px">
+      <el-container style="height: 100%;">
         <el-aside width="200px">
-          <el-menu default-active="0" @select="slideSelect">
+          <el-menu default-active="0" @select="slideSelect" style="height: 100%">
             <el-menu-item v-for="(item, index) in slideMenus"
              :index="index|numToString"
              :key="index">
@@ -36,7 +36,17 @@
           </el-menu> 
         </el-aside>
         <el-main>
-          <li v-for="i in 100" :key="i">{{i}}</li>
+          <div class="border-bottom" style="padding: 20px; margin: -20px">
+            <el-breadcrumb separator="/">
+              <el-breadcrumb-item 
+                v-for="(item,index) in bran"
+                :key="index"
+                :to="{ path: item.path }">
+                {{item.title}}
+              </el-breadcrumb-item>
+            </el-breadcrumb>
+          </div>
+          <router-view></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -50,49 +60,21 @@ export default {
   mixins: [common],
   data(){
     return {
-      navBar: {
-        active: '0',
-        list: [
-          {
-            name: '首页',
-            subActive: '0',
-            submenu: [
-              {
-                icon: 'el-icon-s-home',
-                name: '后台首页'
-              },
-              {
-                icon: 'el-icon-s-claim',
-                name: '商品列表'
-              },
-
-            ]
-          },
-          {
-            name: '商品',
-            subActive: '0',
-            submenu: [
-
-            ]
-          },
-          {name: '订单'},
-          {name: '会员'},
-          {name: '设置'},
-        ]
-      }
+      navBar: [],
+      bran: []
     }
   },
-
+  created(){
+    this.navBar = this.$conf.navBar
+    this.getRouterBran()
+  },
+  watch: {
+    '$route'(to, from){
+      this.getRouterBran()
+    }
+  },
   computed: {
-    slideMenuActive: {
-      get(){
-        return this.navBar.list[this.navBar.active].subActive || '0'
-      },
-      set(val){
-        this.navBar.list[this.navBar.active].subActive = val
-      }
-    },
-    slideMenuActive: {
+    slideMenuActive: { 
       get(){
         return this.navBar.list[this.navBar.active].subActive || '0'
       },
@@ -106,11 +88,30 @@ export default {
   }, 
 
   methods: {
-    handleSelect(key, keyPath) {
-      this.navBar.active = key;
+    //面包屑导航
+    getRouterBran(){
+      let b = this.$route.matched.filter(v => v.name)
+      let arr = []
+      b.forEach((v,k) => {
+        if(v.name === 'index' || v.name === 'layout') return
+        arr.push({
+          name: v.name,
+          path: v.path,
+          title: v.meta.title
+        })
+      })
+      if(arr.length > 0){
+        arr.unshift({name: 'index', path: '/index', title: '后台首页'})
+      }
+      this.bran = arr
+      console.log(arr)
     },
-    slideSelect(key, keyPath) {
-      this.slideMenuActive = key;
+
+    handleSelect(key) {
+      this.navBar.active = key
+    },
+    slideSelect(key) {
+      this.slideMenuActive = key
     }
   }
 }

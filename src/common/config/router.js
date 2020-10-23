@@ -6,19 +6,22 @@ let routes = [
     component: 'layout',
     children: [
       {
-        path: '/index',
-        name: 'index',
+        // path: '/index',
+        // name: 'index',
+        meta: {title: '后台首页'},
         component: 'index/index'
       },
       {
-        path: '/shop/goods/list',
+        // path: '/shop/goods/list',
+        meta: {title: '商品列表'},
         component: 'shop/goods/list'
       }
     ]
   },
   {
-    path: '/login',
-    name: 'login',
+    // path: '/login',
+    // name: 'login',
+    meta: {title: '登录页'},
     component: 'login/index'
   },
   {
