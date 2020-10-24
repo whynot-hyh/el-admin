@@ -26,7 +26,7 @@
       </el-header>
       <el-container style="height: 100%;">
         <el-aside width="200px">
-          <el-menu default-active="0" @select="slideSelect" style="height: 100%">
+          <el-menu :default-active="slideMenuActive" @select="slideSelect" style="height: 100%">
             <el-menu-item v-for="(item, index) in slideMenus"
              :index="index|numToString"
              :key="index">
@@ -35,8 +35,8 @@
             </el-menu-item>
           </el-menu> 
         </el-aside>
-        <el-main>
-          <div class="border-bottom" style="padding: 20px; margin: -20px">
+        <el-main class="bg-light">
+          <div class="border-bottom mb-3 bg-white" style="padding: 20px; margin: -20px">
             <el-breadcrumb separator="/">
               <el-breadcrumb-item 
                 v-for="(item,index) in bran"
@@ -47,6 +47,22 @@
             </el-breadcrumb>
           </div>
           <router-view></router-view>
+
+          <el-backtop target=".el-main" :bottom="100">
+            <div
+              style="{
+                height: 100%;
+                width: 100%;
+                background-color: #f2f5f6;
+                box-shadow: 0 0 6px rgba(0,0,0, .12);
+                text-align: center;
+                line-height: 40px;
+                color: #1989fa;
+              }"
+            >
+              UP
+            </div>
+          </el-backtop>
         </el-main>
       </el-container>
     </el-container>
@@ -66,10 +82,19 @@ export default {
   },
   created(){
     this.navBar = this.$conf.navBar
+    //获取面包屑导航
     this.getRouterBran()
+
+    //初始化选中菜单
+    this.__initNavBar()
   },
   watch: {
-    '$route'(to, from){
+    '$route'(){
+      //本地存储
+      localStorage.setItem('navActive', JSON.stringify({
+        top: this.navBar.active,
+        left: this.slideMenuActive
+      }))
       this.getRouterBran()
     }
   },
@@ -88,11 +113,19 @@ export default {
   }, 
 
   methods: {
+    __initNavBar(){
+      let r = localStorage.getItem('navActive')
+      if(r){
+        r = JSON.parse(r)
+        this.navBar.active = r.top
+        this.slideMenuActive = r.left
+      }
+    },
     //面包屑导航
     getRouterBran(){
       let b = this.$route.matched.filter(v => v.name)
       let arr = []
-      b.forEach((v,k) => {
+      b.forEach(v => {
         if(v.name === 'index' || v.name === 'layout') return
         arr.push({
           name: v.name,
@@ -104,14 +137,22 @@ export default {
         arr.unshift({name: 'index', path: '/index', title: '后台首页'})
       }
       this.bran = arr
-      console.log(arr)
+      // console.log(arr)
     },
 
     handleSelect(key) {
       this.navBar.active = key
+      // this.slideMenuActive = '0'
+      if(this.slideMenus.length > 0){
+        //默认跳转到当前激活
+        this.$router.push({name: this.slideMenus[this.slideMenuActive].pathname})
+      }
+
     },
     slideSelect(key) {
       this.slideMenuActive = key
+      //跳转到指定页面
+      this.$router.push({name: this.slideMenus[key].pathname})
     }
   }
 }
