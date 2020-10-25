@@ -35,7 +35,7 @@
             </el-menu-item>
           </el-menu> 
         </el-aside>
-        <el-main class="bg-light">
+        <el-main class="bg-light" style="position: relative">
           <div class="border-bottom mb-3 bg-white" style="padding: 20px; margin: -20px">
             <el-breadcrumb separator="/">
               <el-breadcrumb-item 
@@ -141,6 +141,14 @@ export default {
     },
 
     handleSelect(key) {
+      // console.log(key)
+      if(key === '6-1'){
+        return console.log('修改')
+      }
+      if(key === '6-2'){
+        return console.log('退出')
+      }
+      
       this.navBar.active = key
       // this.slideMenuActive = '0'
       if(this.slideMenus.length > 0){
