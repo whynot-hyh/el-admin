@@ -26,7 +26,30 @@
         </el-aside>
         <el-container>
           <el-main style="position: absolute; top: 60px; left: 200px; right: 0; bottom: 60px">
-            
+            <el-row :gutter="10">
+              <el-col :span="24" :lg="4" :md="6" :sm="8"
+              v-for="(item,index) in imageList" :key="index">
+                <el-card class="box-card mb-3 position-relative" :body-style="{'padding':'0'}" shadow="hover" style="cursor:pointer">
+                  <div class="border" :class="{'border-danger':item.isChecked}">
+                    <span class="badge badge-danger" v-if="item.isChecked" style="position:absolute;right:0;top:0;">
+                      {{item.checkOrder}}
+                    </span>
+                    <img class="w-100" style="height: 100px" :src="item.url" @click="choose(item)">
+                    <div class="w-100 text-white px-1" style="background:rgba(0,0,0,0.5);margin-top: -25px;position:absolute">
+                      <span class="small">{{item.name}}</span>
+                    </div>
+                    <div class="p-2 text-center">
+                      <el-button-group>
+                        <el-button size="mini" @click="previewImage(item)" class="p-2" icon="el-icon-view"></el-button>
+                        <el-button size="mini" @click="imageEdit(item,index)" class="p-2" icon="el-icon-edit"></el-button>
+                        <el-button size="mini" @click="imageDel(index)" class="p-2" icon="el-icon-delete"></el-button>
+                      </el-button-group>
+                    </div>
+                  </div>
+
+                </el-card>
+              </el-col>
+            </el-row>
           </el-main>
         </el-container>
       </el-container>
@@ -63,6 +86,12 @@
       </div>
     </el-dialog>
 
+    <!-- 预览图片 -->
+    <el-dialog :visible.sync="previevModel" width="60vw" top="5vh">
+      <div style="margin: -60px -20px -30px -20px">
+        <img class="w-100" :src="previewUrl">
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -87,7 +116,11 @@ export default {
       },
       albumEditIndex: -1,
       title: '',
-      uploadModel: false
+      uploadModel: false,
+      previevModel: false,
+      previewUrl: '',
+      imageList:[],
+      chooseList: []
     }
   },
   created(){
@@ -100,6 +133,16 @@ export default {
           name: "相册"+i,
           num: Math.floor(Math.random()*100),
           order: 0
+        })
+      }
+
+      for(let i=0;i<30;i++){
+        this.imageList.push({
+          id: i,      
+          url: 'https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg',
+          name: '图片',
+          isChecked: false,
+          checkOrder: 0
         })
       }
     },
@@ -159,6 +202,73 @@ export default {
       })
     },
 
+    //预览图片
+    previewImage(item){
+      this.previewUrl = item.url
+      this.previevModel = true
+    },
+    //修改图片名称
+    imageEdit(item,index){
+      this.$prompt('请输入新名称', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: item.name,
+        inputValidator(val){
+          if(val === ''){
+            return '图片名称不能为空'
+          }
+        }
+      }).then(({ value }) => {
+        item.name = value
+        this.$message({
+          type: 'success',
+          message: '修改成功'
+        });
+      })
+    },
+    //删除图片
+    imageDel(index){
+      this.$confirm('是否删除该图片?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(({ value }) => {
+        this.imageList.splice(index,1)
+        this.$message({
+          type: 'success',
+          message: '删除成功'
+        });
+      });  
+    },
+
+    //选中图片
+    choose(item){
+      if(!item.isChecked){
+        //加入选中
+        this.chooseList.push({id: item.id, url: item.url})
+        item.checkOrder = this.chooseList.length
+        item.isChecked = true
+        return
+      }
+      //取消选中
+      let i = this.chooseList.findIndex(v => v.id === item.id)
+      if(i === -1) return
+      let length = this.chooseList.length
+      //取消选中中间部分
+      if(i+1 < length){
+        for(let j = i; j < length; j++){
+          let no = this.imageList.findIndex(v => v.id === this.chooseList[j].id)
+          if(no > -1){
+            this.imageList[no].checkOrder--
+          }
+        }
+      }
+       
+      this.chooseList.splice(i,1)
+
+      item.isChecked = false
+      item.checkOrder = 0
+    }
   }
 }
 </script>
