@@ -80,7 +80,7 @@
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page="currentPage4"
+            :current-page="currentPage"
             :page-sizes="[100, 200, 300, 400]"
             :page-size="100"
             layout="total, sizes, prev, pager, next, jumper"
@@ -154,7 +154,8 @@ export default {
       previevModel: false,
       previewUrl: '',
       imageList:[],
-      chooseList: []
+      chooseList: [],
+      currentPage: 1
     }
   },
   created(){
@@ -242,7 +243,7 @@ export default {
       this.previevModel = true
     },
     //修改图片名称
-    imageEdit(item,index){
+    imageEdit(item){
       this.$prompt('请输入新名称', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
