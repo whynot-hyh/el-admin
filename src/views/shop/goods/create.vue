@@ -55,28 +55,36 @@
       </el-tab-pane>
       <el-tab-pane label="商品属性">商品属性</el-tab-pane>
       <el-tab-pane label="媒体设置">媒体设置</el-tab-pane>
-      <el-tab-pane label="商品详情">商品详情</el-tab-pane>
+      <el-tab-pane label="商品详情">
+        <!-- 富文本编辑器 -->
+        <tinymce v-model="msg" ref="editor" @onClick="onClick" />
+
+      </el-tab-pane>
       <el-tab-pane label="折扣设置">折扣设置</el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
-import {mapState, mapMutations} from 'vuex'
+import {mapState, mapMutations} from 'vuex' 
 import baseCreate from '../../../components/shop/create/base-create'
 import singleAttrs from '../../../components/shop/create/single-attrs'
 import skuCard from '../../../components/shop/create/sku/sku_card'
 import skuTable from '../../../components/shop/create/sku_table'
+import tinymce from '../../../components/common/tinymce'
 export default {
   components: {
     baseCreate,
     singleAttrs,
     skuCard,
-    skuTable
+    skuTable,
+    tinymce,
+ 
   },
   data(){
     return {
       tabIndex: 0,
+      msg: 'welcome to use tinymce editor',
     }
   },
   computed: {
@@ -104,7 +112,11 @@ export default {
     //修改表单的值
     vModel(key, value){
       this.vModelState({key, value})
-    }
+    },
+    //鼠标单击的事件
+    onClick(e,editor) {
+      console.log(e,editor)
+    },
   }
 }
 </script>

@@ -21,9 +21,13 @@
       <th scope="row" v-for="(sku,skuI) in item.skus"
       :key="skuI" class="text-center">{{sku.name}}</th>
       <td class="text-center" width="100">
-        <span class="btn btn-light border mr-2" >
+        <span v-if="!item.image" class="btn btn-light border mr-2"
+        @click="chooseImage(item)">
           <i class="el-icon-plus"></i>
         </span>
+        <img v-else :src="item.image" class="rounded" 
+        style="width:40px;height:40px;cursor:pointer"
+        @click="chooseImage(item)">
       </td>
       <td class="text-center" width="100">
         <input type="number" v-model="item.pprice" 
@@ -66,6 +70,7 @@ export default {
       list: []
     }
   },
+  inject: ['app'],
   computed: {
     ...mapGetters(['tableThs','tableData','skuLabels']),
     ...mapState({
@@ -79,7 +84,15 @@ export default {
   },
   mounted(){
     this.list = this.tableData
-  }
+  },
+  methods: {
+    //选择图片
+    chooseImage(item){
+      this.app.chooseImage((res) => {
+        item.image = res[0].url
+      },1)
+    }
+  },
 }
 </script>
 

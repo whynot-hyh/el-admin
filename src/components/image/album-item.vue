@@ -5,7 +5,12 @@
         @click.stop="$emit('change',index)"
     > 
       {{item.name}} 
-      <el-dropdown class="ml-auto">
+
+
+      <span class="btn btn-light btn-sm ml-auto" v-if="!showOptions">
+        {{item.num}}
+      </span>
+      <el-dropdown class="ml-auto" v-else>
         <span class="btn btn-light btn-sm">
           {{item.num}}
           <i class="el-icon-arrow-down el-icon--right"></i>
@@ -26,6 +31,10 @@ export default {
     active: {
       type: Boolean,
       default:  false
+    },
+    showOptions: {
+      type: Boolean,
+      default: true
     }
   },
 
