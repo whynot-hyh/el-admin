@@ -63,6 +63,7 @@ export default{
       phone_model: ''
     },
 
+    discount: 0, //折扣
     //表头
     ths: [
       {name:'商品规格', rowspan:1, colspan:1 , width:""},
