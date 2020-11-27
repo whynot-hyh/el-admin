@@ -12,6 +12,8 @@ export default{
     status: 0, //0仓库 1上架
     express: '', 
 
+    banners: [], //商品大图
+
     oprice: 0, //市场价格
     pprice: 0, //销售价格
     cprice: 0, //成本价格
@@ -53,6 +55,14 @@ export default{
         ]
       },
     ], 
+    
+    //商品类型
+    goods_type_id: '',
+    //商品属性
+    goods_attrs: {
+      phone_model: ''
+    },
+
     //表头
     ths: [
       {name:'商品规格', rowspan:1, colspan:1 , width:""},
@@ -158,7 +168,11 @@ export default{
     //排序规格卡片的规格属性列表
     sortSkuValue(state,{index,value}){
       state.sku_card[index].list = value
-    }
+    },
+    //修改商品属性
+    vModelGoodsAttrs(state,{key,value}){
+      state.goods_attrs[key] = value
+    },
   },
 
   actions: {

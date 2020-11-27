@@ -3,8 +3,8 @@
   position-relative d-flex align-items-center">
     <div v-if="type != 0">
       <!-- 颜色选择器 -->
-      <el-color-picker size="mini" 
-      v-if="type === 1"></el-color-picker>
+      <el-color-picker size="mini" v-model="item.color"
+      v-if="type === 1" @active-change="onColorChange"></el-color-picker>
       <!-- 图片选择 -->
       <template v-else>
         <span v-if="!item.image" class="btn btn-light border mr-2"
@@ -64,6 +64,11 @@ export default {
         this.vModel('image',res[0].url)
       },2)
     },
+    //监听颜色选择器
+    onColorChange(e){
+      // console.log(e)
+      this.vModel('color',e)
+    }
   }
 }
 </script>

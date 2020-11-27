@@ -1,8 +1,8 @@
 <template>
   <div class="card mb-3" style="line-height:1.2">
-    <div class="card-header d-flex align-items-center">
+    <div class="card-header d-flex align-items-center" >
       规格项:
-      <el-input size="mini" style="width:200px"
+      <el-input size="mini" style="width:200px" class="ml-2"
       :value="item.name"
       @input="vModel('name',index,$event)">
         <el-button slot="append" icon="el-icon-more"
@@ -71,6 +71,10 @@ export default {
     }
   },
   mounted(){
+    this.$watch('item.list',(newValue)=>{
+      this.list = newValue
+    })
+    
     //监听拖拽结束
     this.$dragging.$on('dragend', (e) => {
       if(e.group === 'skuItem'+this.index){
@@ -100,7 +104,11 @@ export default {
     //选择规格
     chooseSkus(){
       this.app.chooseSkus((res) => {
-        console.log(res)
+        // console.log(res)
+        this.vModel('name',this.index,res.name)
+        this.vModel('type',this.index,res.type)
+        this.vModel('list',this.index,res.list)
+        this.list = res.list
       })
     }
   }

@@ -33,7 +33,7 @@ export default {
     },
     //选择规格
     chooseSkus(callback){
-      this.$refs.skusDialog.chooseImage(callback)
+      this.$refs.skusDialog.chooseSkus(callback)
     }
   }
 }
